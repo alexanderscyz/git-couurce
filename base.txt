@@ -1,0 +1,210 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema CinetPlanet
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema CinetPlanet
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `CinetPlanet` DEFAULT CHARACTER SET utf8 ;
+USE `CinetPlanet` ;
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`login`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`login` (
+  `id_log` INT NOT NULL AUTO_INCREMENT,
+  `usu_log` VARCHAR(45) NOT NULL,
+  `contr_log` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_log`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`cine_planet`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`cine_planet` (
+  `id_planet` INT NOT NULL AUTO_INCREMENT,
+  `ruc` INT NOT NULL,
+  PRIMARY KEY (`id_planet`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`sucursal`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`sucursal` (
+  `id_suc` INT NOT NULL AUTO_INCREMENT,
+  `ciudad` VARCHAR(45) NOT NULL,
+  `distrito` VARCHAR(45) NOT NULL,
+  `departamento` VARCHAR(45) NOT NULL,
+  `id_planet` INT NOT NULL,
+  PRIMARY KEY (`id_suc`),
+  CONSTRAINT `fk_sucursal_cine_planet`
+    FOREIGN KEY (`id_planet`)
+    REFERENCES `CinetPlanet`.`cine_planet` (`id_planet`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`confitero`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`confitero` (
+  `id_conf` INT NOT NULL AUTO_INCREMENT,
+  `nombre_conf` VARCHAR(45) NOT NULL,
+  `usuario_conf` VARCHAR(45) NOT NULL,
+  `contrasena_conf` VARCHAR(45) NOT NULL,
+  `identificacion_cof` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_conf`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`cajero`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`cajero` (
+  `id_caj` INT NOT NULL AUTO_INCREMENT,
+  `nombre_caj` VARCHAR(45) NOT NULL,
+  `usuario_caj` VARCHAR(45) NOT NULL,
+  `contrasena_caj` VARCHAR(45) NOT NULL,
+  `identificacion_caj` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_caj`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`cliente`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`cliente` (
+  `id_cli` INT NOT NULL AUTO_INCREMENT,
+  `nombre_cli` VARCHAR(45) NOT NULL,
+  `apellido_cli` VARCHAR(45) NOT NULL,
+  `correo_cli` VARCHAR(45) NOT NULL,
+  `dni_cli` VARCHAR(45) NOT NULL,
+  `celular_cli` VARCHAR(45) NOT NULL,
+  `fech_nac_cli` VARCHAR(45) NOT NULL,
+  `socio` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_cli`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`libro_reclamo`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`libro_reclamo` (
+  `id_lr` INT NOT NULL,
+  `asunto_lr` VARCHAR(255) NOT NULL,
+  `descripcion_lr` VARCHAR(255) NOT NULL,
+  `prioridad_lr` VARCHAR(45) NOT NULL,
+  `tipo_reclamo` VARCHAR(45) NOT NULL,
+  `fech_hor_reclamo` DATETIME NOT NULL,
+  `id_planet` INT NOT NULL,
+  `id_cli` INT NOT NULL,
+  PRIMARY KEY (`id_lr`),
+  CONSTRAINT `fk_libro_reclamo_cine_planet1`
+    FOREIGN KEY (`id_planet`)
+    REFERENCES `CinetPlanet`.`cine_planet` (`id_planet`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_libro_reclamo_cliente1`
+    FOREIGN KEY (`id_cli`)
+    REFERENCES `CinetPlanet`.`cliente` (`id_cli`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`dulceria`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`dulceria` (
+  `id_dul` INT NOT NULL AUTO_INCREMENT,
+  `nombre_dul` VARCHAR(500) NOT NULL,
+  `cantidad` INT NOT NULL,
+  `precio_total` DOUBLE NOT NULL,
+  `id_conf` INT NOT NULL,
+  PRIMARY KEY (`id_dul`),
+  CONSTRAINT `fk_dulceria_confitero1`
+    FOREIGN KEY (`id_conf`)
+    REFERENCES `CinetPlanet`.`confitero` (`id_conf`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`pelicula`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`pelicula` (
+  `id_pel` INT NOT NULL AUTO_INCREMENT,
+  `nombre_pel` VARCHAR(45) NOT NULL,
+  `precio_pel` DOUBLE NOT NULL,
+  PRIMARY KEY (`id_pel`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`detalle_pel`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`detalle_pel` (
+  `id_dp` INT NOT NULL AUTO_INCREMENT,
+  `cantidad_dp` INT NOT NULL,
+  `precio_total` DOUBLE NOT NULL,
+  `id_pel` INT NOT NULL,
+  PRIMARY KEY (`id_dp`),
+  CONSTRAINT `fk_detalle_pel_pelicula1`
+    FOREIGN KEY (`id_pel`)
+    REFERENCES `CinetPlanet`.`pelicula` (`id_pel`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`sala`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`sala` (
+  `id_sala` INT NOT NULL AUTO_INCREMENT,
+  `num_sala` VARCHAR(45) NOT NULL,
+  `num_asiento` CHAR(5) NOT NULL,
+  PRIMARY KEY (`id_sala`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `CinetPlanet`.`detalle_boleta_entradas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CinetPlanet`.`detalle_boleta_entradas` (
+  `id_db_ent` INT NOT NULL AUTO_INCREMENT,
+  `id_caj` INT NOT NULL,
+  `id_dp` INT NOT NULL,
+  `id_sala` INT NOT NULL,
+  PRIMARY KEY (`id_db_ent`),
+  CONSTRAINT `fk_detalle_boleta_cajero1`
+    FOREIGN KEY (`id_caj`)
+    REFERENCES `CinetPlanet`.`cajero` (`id_caj`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_detalle_boleta_entradas_detalle_pel1`
+    FOREIGN KEY (`id_dp`)
+    REFERENCES `CinetPlanet`.`detalle_pel` (`id_dp`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_detalle_boleta_entradas_sala1`
+    FOREIGN KEY (`id_sala`)
+    REFERENCES `CinetPlanet`.`sala` (`id_sala`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
